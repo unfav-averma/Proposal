@@ -17,6 +17,7 @@ def home(request):
 # START PROPOSAL
 # =========================
 
+@require_POST
 def start_proposal(request):
 
     # Start a new proposal session
@@ -26,6 +27,7 @@ def start_proposal(request):
     request.session.pop("date_type_selected", None)
     request.session.pop("selected_date", None)
     request.session.pop("selected_time", None)
+    request.session.pop("proposal_response_id", None)
 
     return JsonResponse({"success": True})
 
@@ -85,10 +87,21 @@ def thank_you(request):
 @require_POST
 def save_date_type(request):
 
+    if not request.session.get("proposal_started"):
+        return JsonResponse({
+            "success": False,
+            "error": "Proposal has not been started."
+        }, status=400)
+
     try:
         data = json.loads(request.body)
 
+        if not isinstance(data, dict):
+            raise TypeError
+
         date_type = data.get("date_type")
+        if isinstance(date_type, str):
+            date_type = date_type.strip()
 
         if not date_type:
             return JsonResponse({
@@ -101,7 +114,7 @@ def save_date_type(request):
             "success": True
         })
 
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, TypeError, UnicodeDecodeError):
 
         return JsonResponse({
             "success": False
@@ -123,8 +136,16 @@ def save_selection(request):
 
         data = json.loads(request.body)
 
+        if not isinstance(data, dict):
+            raise TypeError
+
         selected_date = data.get("selected_date")
         selected_time = data.get("selected_time")
+
+        if isinstance(selected_date, str):
+            selected_date = selected_date.strip()
+        if isinstance(selected_time, str):
+            selected_time = selected_time.strip()
 
         if not selected_date or not selected_time:
             return JsonResponse({
@@ -153,7 +174,7 @@ def save_selection(request):
             "success": True
         })
 
-    except (json.JSONDecodeError, ValueError):
+    except (json.JSONDecodeError, TypeError, UnicodeDecodeError, ValueError):
 
         return JsonResponse({
             "success": False,

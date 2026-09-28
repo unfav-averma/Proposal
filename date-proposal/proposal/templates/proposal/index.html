@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="{% static 'proposal/css/transition.css' %}">
 </head>
 <body>
+    {% csrf_token %}
      <div class="page-transition"></div>
     <main class="proposal_screen">
         <div class="proposal_content"> 
@@ -33,16 +34,11 @@
 </h1>
 
 <div class="buttons">
-     <button id="yesBtn" onclick="goToDatePage()">Yes ❤️</button>
+    <button id="yesBtn">Yes ❤️</button>
     <button id="noBtn">No 🥺</button>
 </div>
         </div>
     </main>
-    <script>
-    function goToDatePage() {
-        window.location.href = "{% url 'date_page' %}";
-    }
-</script>
 <script src="{% static 'proposal/js/script.js' %}"></script>
 <script src="{% static 'proposal/js/page-transition.js' %}"></script>
 </body>

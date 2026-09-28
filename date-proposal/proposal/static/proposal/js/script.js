@@ -37,8 +37,21 @@ noBtn.addEventListener("click", function() {
 
 yesBtn.addEventListener("click", function() {
 
-    fetch("/start-proposal/")
+    const csrfToken = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
+
+    fetch("/start-proposal/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": csrfToken
+        }
+    })
         .then(function(response) {
+            if (!response.ok) {
+                throw new Error("Server returned an error: " + response.status);
+            }
+
             return response.json();
         })
         .then(function(data) {

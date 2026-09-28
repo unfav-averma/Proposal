@@ -1,10 +1,13 @@
-const pageTransition = document.getElementById("pageTransition");
+const pageTransition = document.getElementById("pageTransition") ||
+    document.querySelector(".page-transition");
 
 
 /* PAGE LOAD */
 window.addEventListener("pageshow", function() {
 
-    pageTransition.classList.remove("active");
+    if (pageTransition) {
+        pageTransition.classList.remove("active");
+    }
 
 });
 
@@ -12,7 +15,9 @@ window.addEventListener("pageshow", function() {
 /* PAGE CHANGE */
 function goToPage(url) {
 
-    pageTransition.classList.add("active");
+    if (pageTransition) {
+        pageTransition.classList.add("active");
+    }
 
     setTimeout(function() {
 
